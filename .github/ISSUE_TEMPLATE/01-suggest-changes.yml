@@ -1,0 +1,17 @@
+name: "✍️ ​​Suggest Changes"
+description: Help me improve Blob Climbers by suggesting changes.
+labels: [suggestion]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to help me improve Blob Climbers with your suggestions.
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggestions
+      description: What changes would you like to suggest?
+      placeholder: Enter your suggestions here.
+    validations:
+      required: true
