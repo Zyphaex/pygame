@@ -3,6 +3,11 @@ from sys import exit
 
 from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, PINK, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_PATH, SNAIL_PATH
 
+def display_score():
+    score = int(pygame.time.get_ticks() / 10) - start_time
+    score_surf = font.render(f'{score}', False, PURPLE)
+    score_rect = score_surf.get_rect(center = (400, 50))
+    screen.blit(score_surf, score_rect)
 
 pygame.init()
 pygame.display.set_caption('Blob Climbers')
@@ -10,14 +15,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font(FONT_PATH, 100)
 game_active = True
+start_time = 0
 
 sky_surf = pygame.image.load(SKY_PATH).convert()
 ground_surf = pygame.image.load(GROUND_PATH).convert()
-score_surf = font.render('Jump!', False, PURPLE)
 player_surf = pygame.image.load(PLAYER_PATH).convert_alpha()
 snail_surf = pygame.image.load(SNAIL_PATH).convert_alpha()
 
-score_rect = score_surf.get_rect(center = (400, 50))
 player_rect = player_surf.get_rect(midbottom = (80, 300))
 snail_rect = snail_surf.get_rect(midbottom = (600, 300))
 
@@ -38,13 +42,15 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 snail_rect.left = 600
+                start_time = int(pygame.time.get_ticks() / 10)
 
     if game_active:
         screen.blit(sky_surf, (0, 0))
         screen.blit(ground_surf, (0, 300))
-        pygame.draw.rect(screen, PINK, score_rect)
-        pygame.draw.rect(screen, PINK, score_rect, 10)
-        screen.blit(score_surf, score_rect)
+        # pygame.draw.rect(screen, PINK, score_rect)
+        # pygame.draw.rect(screen, PINK, score_rect, 10)
+        # screen.blit(score_surf, score_rect)
+        display_score()
 
         # Snail
         screen.blit(snail_surf, snail_rect)
