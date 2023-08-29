@@ -2,10 +2,11 @@ from sys import exit
 
 import pygame
 
+from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 
 pygame.init()
 pygame.display.set_caption('Blob Climbers')
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font('assets/font/Pixeltype.ttf', 100)
 
@@ -37,4 +38,4 @@ while True:
     screen.blit(player_surf, player_rect)
 
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(FPS)
