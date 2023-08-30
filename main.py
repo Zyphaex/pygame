@@ -2,7 +2,7 @@ import pygame
 from sys import exit
 from random import randint
 
-from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_WALK_1_PATH, PLAYER_WALK_2_PATH, PLAYER_JUMP_PATH, SNAIL_PATH, FLY_PATH, PLAYER_STAND_PATH
+from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_WALK_1_PATH, PLAYER_WALK_2_PATH, PLAYER_JUMP_PATH, SNAIL_FRAME_1_PATH, SNAIL_FRAME_2_PATH, FLY_FRAME_1_PATH, FLY_FRAME_2_PATH, PLAYER_STAND_PATH
 
 pygame.init()
 pygame.display.set_caption('Blob Climbers')
@@ -43,12 +43,29 @@ def player_animation():
         player_surf = player_walk[int(player_index)]
 
 # Obstacles
-snail_surf = pygame.image.load(SNAIL_PATH).convert_alpha()
-fly_surf = pygame.image.load(FLY_PATH).convert_alpha()
+snail_index = 0
+snail_frame_1 = pygame.image.load(SNAIL_FRAME_1_PATH).convert_alpha()
+snail_frame_2 = pygame.image.load(SNAIL_FRAME_2_PATH).convert_alpha()
+snail_frames = [snail_frame_1, snail_frame_2]
+snail_surf = snail_frames[snail_index]
+
+fly_index = 0
+fly_frame_1 = pygame.image.load(FLY_FRAME_1_PATH).convert_alpha()
+fly_frame_2 = pygame.image.load(FLY_FRAME_2_PATH).convert_alpha()
+fly_frames = [fly_frame_1, fly_frame_2]
+fly_surf = fly_frames[fly_index]
 
 obstacle_rect_list = []
+
+# Timer
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
+
+snail_animation_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(snail_animation_timer, 500)
+
+fly_animation_timer = pygame.USEREVENT + 3
+pygame.time.set_timer(fly_animation_timer, 200)
 
 def obstacle_move(obstacle_list):
     if obstacle_list:
@@ -56,9 +73,9 @@ def obstacle_move(obstacle_list):
             obstacle_rect.x -= 5
 
             if obstacle_rect.bottom == GROUND_HEIGHT:
-                screen.blit(snail_surf, obstacle_rect)
+                screen.blit(snail_frames[snail_index], obstacle_rect)
             else:
-                screen.blit(fly_surf, obstacle_rect)
+                screen.blit(fly_frames[fly_index], obstacle_rect)
 
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
         return obstacle_list
@@ -98,22 +115,39 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        
         if game_active:
             if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom >= GROUND_HEIGHT:
                 player_gravity = -20
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= GROUND_HEIGHT:
                     player_gravity = -20
+        
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 start_time = int(pygame.time.get_ticks() / 10)
-        
-        if event.type == obstacle_timer and game_active:
-            if randint(0, 2):
-                obstacle_rect_list.append(snail_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT)))
-            else:
-                obstacle_rect_list.append(fly_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT - 90)))
+
+        if game_active:
+            if event.type == obstacle_timer:
+                if randint(0, 2):
+                    obstacle_rect_list.append(snail_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT)))
+                else:
+                    obstacle_rect_list.append(fly_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT - 90)))
+            
+            if event.type == snail_animation_timer:
+                if snail_index == 0:
+                    snail_index = 1
+                else:
+                    snail_index == 0
+                snail_surf = snail_frames[snail_index]
+            
+            if event.type == fly_animation_timer:
+                if fly_index == 0:
+                    fly_index = 1
+                else:
+                    fly_index = 0
+                fly_surf = fly_frames[fly_index]
 
     if game_active:
         screen.blit(sky_surf, (0, 0))
@@ -143,7 +177,7 @@ while True:
         screen.blit(game_name, game_name_rect)
         screen.blit(player_stand, player_stand_rect)
         score_message = font.render(f'Hiscore: {hiscore}', False, PURPLE)
-        score_message_rect = score_message.get_rect(center = (SCREEN_WIDTH / 2, 540))
+        score_message_rect = score_message.get_rect(center = (SCREEN_WIDTH // 2, 540))
         obstacle_rect_list.clear()
         player_rect.midbottom = (100, GROUND_HEIGHT)
         player_gravity = 0

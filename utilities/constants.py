@@ -19,9 +19,10 @@ GROUND_PATH = 'assets/graphics/ground.png'
 PLAYER_WALK_1_PATH = 'assets/graphics/player/player_walk_1.png'
 PLAYER_WALK_2_PATH = 'assets/graphics/player/player_walk_2.png'
 PLAYER_JUMP_PATH = 'assets/graphics/player/player_jump.png'
-
 # Obstacles
-SNAIL_PATH = 'assets/graphics/snail/snail_1.png'
-FLY_PATH = 'assets/graphics/fly/fly_1.png'
+SNAIL_FRAME_1_PATH = 'assets/graphics/snail/snail_1.png'
+SNAIL_FRAME_2_PATH = 'assets/graphics/snail/snail_2.png'
+FLY_FRAME_1_PATH = 'assets/graphics/fly/fly_1.png'
+FLY_FRAME_2_PATH = 'assets/graphics/fly/fly_2.png'
 # Main Menu
 PLAYER_STAND_PATH = 'assets/graphics/player/player_stand.png'
