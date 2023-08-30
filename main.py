@@ -2,7 +2,7 @@ import pygame
 from sys import exit
 from random import randint
 
-from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_PATH, SNAIL_PATH, PLAYER_STAND_PATH
+from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_PATH, SNAIL_PATH, FLY_PATH, PLAYER_STAND_PATH
 
 pygame.init()
 pygame.display.set_caption('Blob Climbers')
@@ -26,7 +26,8 @@ player_rect = player_surf.get_rect(midbottom=(100, GROUND_HEIGHT))
 
 # Obstacles
 snail_surf = pygame.image.load(SNAIL_PATH).convert_alpha()
-snail_rect = snail_surf.get_rect(midbottom=(SCREEN_WIDTH, GROUND_HEIGHT))
+fly_surf = pygame.image.load(FLY_PATH).convert_alpha()
+
 obstacle_rect_list = []
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
@@ -35,9 +36,15 @@ def obstacle_move(obstacle_list):
     if obstacle_list:
         for obstacle_rect in obstacle_list:
             obstacle_rect.x -= 5
-            screen.blit(snail_surf, obstacle_rect)
+
+            if obstacle_rect.bottom == GROUND_HEIGHT:
+                screen.blit(snail_surf, obstacle_rect)
+            else:
+                screen.blit(fly_surf, obstacle_rect)
+
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
         return obstacle_list
+    
     else:
         return []
 
@@ -47,6 +54,7 @@ def collisions(player, obstacles):
         for obstacle_rect in obstacles:
             if player.colliderect(obstacle_rect):
                 return False
+            
     return True
 
 # Score
@@ -55,6 +63,7 @@ def display_score():
     score_surf = font.render(f'{score}', False, PURPLE)
     score_rect = score_surf.get_rect(center=(SCREEN_WIDTH // 2, 60))
     screen.blit(score_surf, score_rect)
+
     return score
 
 # Main Menu
@@ -80,11 +89,13 @@ while True:
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
-                snail_rect.left = SCREEN_WIDTH
                 start_time = int(pygame.time.get_ticks() / 10)
         
         if event.type == obstacle_timer and game_active:
-            obstacle_rect_list.append(snail_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT)))
+            if randint(0, 2):
+                obstacle_rect_list.append(snail_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT)))
+            else:
+                obstacle_rect_list.append(fly_surf.get_rect(midbottom=(randint(SCREEN_WIDTH, SCREEN_WIDTH + 200), GROUND_HEIGHT - 90)))
 
     if game_active:
         screen.blit(sky_surf, (0, 0))
@@ -107,7 +118,7 @@ while True:
         
         # Collision
         game_active = collisions(player_rect, obstacle_rect_list)
-        
+
     else:
         screen.fill((94, 129, 162))
         screen.blit(game_name, game_name_rect)
