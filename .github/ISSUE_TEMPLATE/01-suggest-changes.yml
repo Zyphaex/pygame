@@ -1,12 +1,12 @@
 name: "✍️ ​​Suggest Changes"
-description: Help me improve Blob Climbers by suggesting changes.
+description: Help me improve my games by suggesting changes.
 labels: [suggestion]
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to help me improve Blob Climbers with your suggestions.
+        Thanks for taking the time to help me improve my games with your suggestions.
   - type: textarea
     id: suggestions
     attributes:
