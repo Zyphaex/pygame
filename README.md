@@ -1,6 +1,14 @@
 # Pygame Playground
 
+<div align="center">
+    <img src="pygame/pygame-logo.png" alt="Pygame" width="500">
+</div>
+
 ---
+
+[Pygame](https://pyga.me/) is a cross-platform set of Python modules designed for writing video games.
+
+This repository showcases the games that I have developed.
 
 ## Requirements
 
@@ -17,7 +25,7 @@ pip --version
 
 ## Installation
 
-Install the required package and run the game:
+Install the required package and run one of the games:
 
 ```bash
 pip install pygame-ce
