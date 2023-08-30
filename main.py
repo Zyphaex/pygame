@@ -2,7 +2,7 @@ import pygame
 from sys import exit
 from random import randint
 
-from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_PATH, SNAIL_PATH, FLY_PATH, PLAYER_STAND_PATH
+from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_WALK_1_PATH, PLAYER_WALK_2_PATH, PLAYER_JUMP_PATH, SNAIL_PATH, FLY_PATH, PLAYER_STAND_PATH
 
 pygame.init()
 pygame.display.set_caption('Blob Climbers')
@@ -21,8 +21,26 @@ ground_surf = pygame.image.load(GROUND_PATH).convert()
 ground_surf = pygame.transform.scale(ground_surf, (SCREEN_WIDTH, SCREEN_HEIGHT - 300))
 
 # Player
-player_surf = pygame.image.load(PLAYER_PATH).convert_alpha()
+player_index = 0
+player_walk_1 = pygame.image.load(PLAYER_WALK_1_PATH).convert_alpha()
+player_walk_2 = pygame.image.load(PLAYER_WALK_2_PATH).convert_alpha()
+player_walk = [player_walk_1, player_walk_2]
+player_jump = pygame.image.load(PLAYER_JUMP_PATH).convert_alpha()
+player_surf = player_walk[player_index]
 player_rect = player_surf.get_rect(midbottom=(100, GROUND_HEIGHT))
+
+# Player Animation
+def player_animation():
+    global player_surf, player_index
+    if player_rect.bottom < GROUND_HEIGHT:
+        # Jumping
+        player_surf = player_jump
+    else:
+        # Walking
+        player_index += 0.1
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surf = player_walk[int(player_index)]
 
 # Obstacles
 snail_surf = pygame.image.load(SNAIL_PATH).convert_alpha()
@@ -108,6 +126,7 @@ while True:
         # Player
         player_gravity += 1
         player_rect.y += player_gravity
+        player_animation()
         screen.blit(player_surf, player_rect)
         if player_rect.bottom >= GROUND_HEIGHT:
             player_rect.bottom = GROUND_HEIGHT

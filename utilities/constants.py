@@ -16,7 +16,10 @@ FONT_PATH = 'assets/font/Pixeltype.ttf'
 SKY_PATH = 'assets/graphics/sky.png'
 GROUND_PATH = 'assets/graphics/ground.png'
 # Player
-PLAYER_PATH = 'assets/graphics/player/player_walk_1.png'
+PLAYER_WALK_1_PATH = 'assets/graphics/player/player_walk_1.png'
+PLAYER_WALK_2_PATH = 'assets/graphics/player/player_walk_2.png'
+PLAYER_JUMP_PATH = 'assets/graphics/player/player_jump.png'
+
 # Obstacles
 SNAIL_PATH = 'assets/graphics/snail/snail_1.png'
 FLY_PATH = 'assets/graphics/fly/fly_1.png'
