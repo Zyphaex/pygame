@@ -4,8 +4,46 @@ from random import randint
 
 from utilities.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, PURPLE, GROUND_HEIGHT, FONT_PATH, SKY_PATH, GROUND_PATH, PLAYER_WALK_1_PATH, PLAYER_WALK_2_PATH, PLAYER_JUMP_PATH, SNAIL_FRAME_1_PATH, SNAIL_FRAME_2_PATH, FLY_FRAME_1_PATH, FLY_FRAME_2_PATH, PLAYER_STAND_PATH
 
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        player_walk_1 = pygame.image.load(PLAYER_WALK_1_PATH).convert_alpha()
+        player_walk_2 = pygame.image.load(PLAYER_WALK_2_PATH).convert_alpha()
+        self.player_walk = [player_walk_1, player_walk_2]
+        self.player_jump = pygame.image.load(PLAYER_JUMP_PATH).convert_alpha()
+        self.player_index = 0
+
+        self.image = self.player_walk[self.player_index]
+        self.rect = self.image.get_rect(midbottom = (100, GROUND_HEIGHT))
+        self.gravity = 0
+
+    def player_input(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] and self.rect.bottom >= GROUND_HEIGHT:
+            self.gravity = -20
+
+    def apply_gravity(self):
+        self.gravity += 1
+        self.rect.y += self.gravity
+        if self.rect.bottom >= GROUND_HEIGHT:
+            self.rect.bottom = GROUND_HEIGHT
+
+    def animation_state(self):
+        if self.rect.bottom < GROUND_HEIGHT:
+            self.image = self.player_jump
+        else:
+            self.player_index += 0.1
+            if self.player_index >= len(self.player_walk):
+                self.player_index = 0
+            self.image = self.player_walk[int(self.player_index)]
+
+    def update(self):
+        self.player_input()
+        self.apply_gravity()
+        self.animation_state()
+    
 pygame.init()
-pygame.display.set_caption('Blob Climbers')
+pygame.display.set_caption('Jumping Game')
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font(FONT_PATH, 100)
@@ -13,6 +51,9 @@ game_active = False
 start_time = 0
 hiscore = 0
 player_gravity = 0
+
+player = pygame.sprite.GroupSingle()
+player.add(Player())
 
 # World
 sky_surf = pygame.image.load(SKY_PATH).convert()
@@ -161,7 +202,8 @@ while True:
         player_gravity += 1
         player_rect.y += player_gravity
         player_animation()
-        screen.blit(player_surf, player_rect)
+        player.draw(screen)
+        player.update()
         if player_rect.bottom >= GROUND_HEIGHT:
             player_rect.bottom = GROUND_HEIGHT
             player_gravity = 0
